@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 248, 248, 248;
+  --background-rgb: 10, 10, 10;
+  --accent-rgb: 255, 160, 0;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-accent;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply bg-accent text-background font-bold py-2 px-4 rounded hover:bg-opacity-90 transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Ensure all text is using the correct color */
+* {
+  color: rgb(var(--foreground-rgb));
+}
+
+/* Override for specific elements that need different colors */
+.text-accent {
+  color: rgb(var(--accent-rgb));
+}
+
+.bg-accent {
+  background-color: rgb(var(--accent-rgb));
+}

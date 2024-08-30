@@ -1,0 +1,29 @@
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+:root {
+  --background-color: #0F0F0F;
+  --text-color: #F5F5F5;
+  --accent-color: #FFA000;
+}
+
+.accent {
+  color: var(--accent-color);
+}
+
+/* Update button styles */
+button {
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  /* ... other button styles ... */
+}
+
+/* Update link styles */
+a {
+  color: var(--accent-color);
+  /* ... other link styles ... */
+}
+
+/* ... other global styles ... */
