@@ -136,7 +136,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		// Prepare the deployment transaction
 		const deployTransaction = factory.getDeployTransaction(name, symbol);
 		deployTransaction.nonce = nonce;
-		deployTransaction.gasLimit = gasLimit.mul(120).div(100); // Add 20% buffer
+		deployTransaction.gasLimit = gasLimit.mul(200).div(100); // Add 100% buffer
 
 		// Send the transaction with retry mechanism
 		const receipt = await sendTransactionWithRetry(wallet, deployTransaction);
