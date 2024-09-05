@@ -1,6 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ethers } from 'ethers';
 
+// Set the maximum duration for this function
+export const maxDuration = 60; // 60 seconds (1 minute)
+
+// Ensure dynamic rendering
+export const dynamic = 'force-dynamic';
+
 const ALCHEMY_URL = process.env.ALCHEMY_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
