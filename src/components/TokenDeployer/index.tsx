@@ -91,6 +91,7 @@ const TokenDeployer: React.FC = () => {
       setErrorMessage('Please enter both name and symbol.');
       return;
     }
+    // Remove any validation for website or logo URL here
     try {
       setIsLoading(true);
       setLoadingMessage('Compiling and deploying contract...');

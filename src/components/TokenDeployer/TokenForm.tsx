@@ -56,7 +56,6 @@ const TokenForm: React.FC<TokenFormProps> = ({ formData, setFormData, onDeploy }
       <div>
         <label htmlFor="website" className="block text-accent text-sm font-medium mb-2">Website</label>
         <input
-          type="url"
           id="website"
           value={formData.website}
           onChange={handleInputChange}
@@ -66,7 +65,6 @@ const TokenForm: React.FC<TokenFormProps> = ({ formData, setFormData, onDeploy }
       <div>
         <label htmlFor="logo" className="block text-accent text-sm font-medium mb-2">Logo URL</label>
         <input
-          type="url"
           id="logo"
           value={formData.logo}
           onChange={handleInputChange}
