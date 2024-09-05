@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/deploy.ts": {
+    "pages/api/deploy.ts": {
       "maxDuration": 60
     }
   }
