@@ -7,10 +7,11 @@ interface LoadingPopupProps {
   message: string;
   progress: number;
   isDeployed: boolean;
+  deployedAddress: string | null;
   onClose: () => void;
 }
 
-const LoadingPopup: React.FC<LoadingPopupProps> = ({ message, progress, isDeployed, onClose }) => (
+const LoadingPopup: React.FC<LoadingPopupProps> = ({ message, progress, isDeployed, deployedAddress, onClose }) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -42,6 +43,11 @@ const LoadingPopup: React.FC<LoadingPopupProps> = ({ message, progress, isDeploy
           </div>
           <p className="text-text mb-4">{progress}%</p>
         </>
+      )}
+      {deployedAddress && (
+        <p className="text-text mb-4">
+          Contract Address: <a href={`https://bartio.beratrail.io/token/${deployedAddress}`} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">{deployedAddress}</a>
+        </p>
       )}
       {isDeployed && (
         <button

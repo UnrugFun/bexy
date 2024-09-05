@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 
-const INFURA_URL = "https://sepolia.infura.io/v3/377cad0f477547e98ebc2c94f12411b5";
+const INFURA_URL = "https://berachain-bartio.g.alchemy.com/v2/ILVH9f_7yJatP_2sYjxL67DInR9Tr59I";
 
 export const checkTransactionStatus = async (
   txHash: string,

@@ -1,6 +1,11 @@
 import { ethers } from 'ethers';
 
-const INFURA_URL = "https://sepolia.infura.io/v3/377cad0f477547e98ebc2c94f12411b5";
+const ALCHEMY_URL = "https://berachain-bartio.g.alchemy.com/v2/ILVH9f_7yJatP_2sYjxL67DInR9Tr59I";
+const MAX_ATTEMPTS = 30; // Maximum number of attempts
+const POLLING_INTERVAL = 5000; // 5 seconds
+const DISPLAY_DELAY = 5000;
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const checkTransactionStatus = async (
   txHash: string,
@@ -9,24 +14,49 @@ export const checkTransactionStatus = async (
   setIsLoading: (isLoading: boolean) => void,
   setLoadingMessage: (message: string) => void
 ) => {
-  const provider = new ethers.providers.JsonRpcProvider(INFURA_URL);
-  try {
-    const tx = await provider.getTransaction(txHash);
-    if (tx && tx.blockNumber) {
-      const receipt = await tx.wait();
-      if (receipt.status === 1) {
-        setDeployedAddress(receipt.contractAddress);
-      } else {
-        setErrorMessage('Contract deployment failed.');
-        setIsLoading(false);
+  const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_URL);
+  let attempts = 0;
+
+  while (attempts < MAX_ATTEMPTS) {
+    try {
+      console.log(`Attempt ${attempts + 1}: Checking transaction status`);
+      setLoadingMessage(`Waiting for transaction confirmation... Attempt ${attempts + 1}/${MAX_ATTEMPTS}`);
+      const tx = await provider.getTransaction(txHash);
+      
+      if (tx && tx.blockNumber) {
+        console.log('Transaction mined, waiting for receipt');
+        const receipt = await tx.wait();
+        if (receipt.status === 1) {
+          const contractAddress = receipt.contractAddress;
+          if (contractAddress) {
+            console.log(`Contract deployed at address: ${contractAddress}`);
+            setDeployedAddress(contractAddress);
+            setLoadingMessage(`Contract deployed successfully at address: ${contractAddress}`);
+            await sleep(DISPLAY_DELAY);
+            setIsLoading(false);
+            return;
+          } else {
+            throw new Error('Contract address not found in transaction receipt.');
+          }
+        } else {
+          throw new Error('Contract deployment failed.');
+        }
       }
-    } else {
-      setTimeout(() => checkTransactionStatus(txHash, setDeployedAddress, setErrorMessage, setIsLoading, setLoadingMessage), 5000);
+      
+      attempts++;
+      await sleep(POLLING_INTERVAL);
+    } catch (error) {
+      console.error('Error checking transaction status:', error);
+      setErrorMessage(`Error: ${(error as Error).message}`);
+      await sleep(DISPLAY_DELAY);
+      setIsLoading(false);
+      return;
     }
-  } catch (error) {
-    setErrorMessage('Error checking transaction status. Please try again.');
-    setIsLoading(false);
   }
+  
+  setErrorMessage('Transaction confirmation timed out. Please check the network explorer for the final status.');
+  await sleep(DISPLAY_DELAY);
+  setIsLoading(false);
 };
 
 // We don't need the DeploymentHandler component anymore, so you can remove it if it's not used elsewhere

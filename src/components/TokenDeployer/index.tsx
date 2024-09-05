@@ -99,15 +99,9 @@ const TokenDeployer: React.FC = () => {
         name: formData.name,
         symbol: formData.symbol
       });
-      checkTransactionStatus(
+      await checkTransactionStatus(
         response.data.transactionHash,
-        (address: string | null) => {
-          setDeployedAddress(address);
-          if (address) {
-            setProgress(100);
-            setLoadingMessage(`Contract deployed successfully at address: ${address}`);
-          }
-        },
+        setDeployedAddress,
         setErrorMessage,
         setIsLoading,
         setLoadingMessage
@@ -128,11 +122,12 @@ const TokenDeployer: React.FC = () => {
         onDeploy={handleDeploy}
       />
       <ErrorDisplay errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
-      {isLoading && (
+      {(isLoading || deployedAddress) && (
         <LoadingPopup
           message={loadingMessage}
           progress={progress}
           isDeployed={!!deployedAddress}
+          deployedAddress={deployedAddress}
           onClose={() => {
             setIsLoading(false);
             setProgress(0);
