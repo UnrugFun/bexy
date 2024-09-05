@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ethers } from 'ethers';
 
-// Set the maximum duration for this function
-export const maxDuration = 60; // 60 seconds (1 minute)
+// Configure the maximum duration for this function
+export const config = {
+  maxDuration: 60, // 60 seconds (1 minute)
+};
 
 // Ensure dynamic rendering
 export const dynamic = 'force-dynamic';
