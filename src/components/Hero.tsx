@@ -13,9 +13,11 @@ const Hero: React.FC = () => (
             placeholder="Enter Email to join waitlist"
             className="bg-background text-text py-2 px-4 rounded-l-md focus:outline-none focus:ring-2 focus:ring-accent flex-grow border border-accent border-r-0"
           />
-          <button className="btn rounded-l-none border border-accent">
-            Join
-          </button>
+          <a href="https://forms.gle/qCXuJXyDCzmbdq4E6">
+            <button className="btn rounded-l-none border border-accent">
+              Join
+            </button>
+          </a>
         </div>
       </div>
       <div className="lg:w-1/2 relative">
