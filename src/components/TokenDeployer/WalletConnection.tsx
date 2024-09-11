@@ -2,25 +2,23 @@ import React from 'react';
 import { ethers } from 'ethers';
 
 interface WalletConnectionProps {
-  setSigner: React.Dispatch<React.SetStateAction<ethers.Signer | null>>;
+  setSigner: (signer: ethers.Signer) => void;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  isConnected: boolean;
 }
 
-const WalletConnection: React.FC<WalletConnectionProps> = ({ setSigner, setErrorMessage }) => {
+const WalletConnection: React.FC<WalletConnectionProps> = ({ setSigner, setErrorMessage, isConnected }) => {
   const connectWallet = async () => {
     if (typeof window.ethereum !== 'undefined') {
       try {
-        // Request account access
         await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-        // Create provider and signer
         const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
         await provider.send("eth_chainId", []);
         
-        // Switch to Berachain bArtio
         await switchToBerachainNetwork(provider);
 
-        setSigner(provider.getSigner());
+        const signer = provider.getSigner();
+        setSigner(signer);
       } catch (error) {
         console.error("Connection error:", error);
         setErrorMessage("Failed to connect wallet. Please try again.");
@@ -35,7 +33,7 @@ const WalletConnection: React.FC<WalletConnectionProps> = ({ setSigner, setError
       await window.ethereum.request({
         method: 'wallet_addEthereumChain',
         params: [{
-          chainId: '0x13904',
+          chainId: '0x138D4', // 80084 in hexadecimal
           chainName: 'Berachain bArtio',
           nativeCurrency: {
             name: 'BERA',
@@ -43,7 +41,7 @@ const WalletConnection: React.FC<WalletConnectionProps> = ({ setSigner, setError
             decimals: 18
           },
           rpcUrls: ['https://bartio.rpc.berachain.com/'],
-          blockExplorerUrls: ['https://artio.beratrail.io/']
+          blockExplorerUrls: ['https://bartio.beratrail.io/']
         }]
       });
     } catch (error) {
@@ -54,13 +52,13 @@ const WalletConnection: React.FC<WalletConnectionProps> = ({ setSigner, setError
 
   const switchToBerachainNetwork = async (provider: ethers.providers.Web3Provider) => {
     try {
-      await provider.send('wallet_switchEthereumChain', [{ chainId: '0x13904' }]);
+      await provider.send('wallet_switchEthereumChain', [{ chainId: '0x138D4' }]);
     } catch (error: any) {
       // If the chain hasn't been added to MetaMask, add it
       if (error.code === 4902) {
         try {
           await addBerachainNetwork();
-          await provider.send('wallet_switchEthereumChain', [{ chainId: '0x13904' }]);
+          await provider.send('wallet_switchEthereumChain', [{ chainId: '0x138D4' }]);
         } catch (addError) {
           console.error("Error adding and switching to Berachain network:", addError);
           throw addError;
@@ -73,8 +71,11 @@ const WalletConnection: React.FC<WalletConnectionProps> = ({ setSigner, setError
   };
 
   return (
-    <button onClick={connectWallet} className="bg-accent text-background py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors duration-200">
-      Connect Wallet
+    <button 
+      onClick={connectWallet} 
+      className="bg-accent text-background py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors duration-200"
+    >
+      {isConnected ? 'Wallet Connected' : 'Connect Wallet'}
     </button>
   );
 };

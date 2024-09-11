@@ -4,16 +4,23 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import axios from 'axios'; // Add this import
 import TokenForm from './TokenForm';
-import ErrorDisplay from './ErrorDisplay';
 import { checkTransactionStatus } from './DeploymentHandler';
 import { FormData } from './types';
 import AIButton from '../AIButton';
 import LoadingPopup from '../LoadingPopup';
 import AiPopup from '../AiPopup';
+import WalletConnection from './WalletConnection';
+import ErrorPopup from '../ErrorPopup';
 
 const WEBHOOK_URL = process.env.NEXT_PUBLIC_WEBHOOK_URL;
+const RECIPIENT_ADDRESS = process.env.NEXT_PUBLIC_RECIPIENT_ADDRESS;
 
-const TokenDeployer: React.FC = () => {
+interface TokenDeployerProps {
+  signer: ethers.Signer | null;
+  isWalletConnected: boolean;
+}
+
+const TokenDeployer: React.FC<TokenDeployerProps> = ({ signer, isWalletConnected }) => {
   const [formData, setFormData] = useState<FormData>({
     name: '',
     symbol: '',
@@ -22,12 +29,12 @@ const TokenDeployer: React.FC = () => {
     logo: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
-  const [signer, setSigner] = useState<ethers.Signer | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [progress, setProgress] = useState(0);
   const [showAiPopup, setShowAiPopup] = useState(false);
   const [deployedAddress, setDeployedAddress] = useState<string | null>(null);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -41,6 +48,39 @@ const TokenDeployer: React.FC = () => {
     }
     return () => clearInterval(interval);
   }, [isLoading]);
+
+  const handleError = (message: string) => {
+    setErrorMessage(message);
+    setShowErrorPopup(true);
+  };
+
+  const handleAIButtonClick = async () => {
+    if (!isWalletConnected || !signer) {
+      handleError('Please connect your wallet first.');
+      return;
+    }
+
+    setIsLoading(true);
+    setLoadingMessage('Initiating transaction...');
+    setProgress(0);
+
+    try {
+      const tx = await signer.sendTransaction({
+        to: RECIPIENT_ADDRESS,
+        value: ethers.utils.parseEther('0.005')
+      });
+
+      setLoadingMessage('Waiting for transaction confirmation...');
+      await tx.wait();
+
+      setIsLoading(false);
+      setShowAiPopup(true);
+    } catch (error) {
+      console.error('Transaction error:', error);
+      setErrorMessage('Transaction failed. Insufficient funds. Please try again.');
+      setIsLoading(false);
+    }
+  };
 
   const handleAIGeneration = async (tokenName: string) => {
     try {
@@ -88,7 +128,7 @@ const TokenDeployer: React.FC = () => {
 
   const handleDeploy = async () => {
     if (!formData.name || !formData.symbol) {
-      setErrorMessage('Please enter both name and symbol.');
+      handleError('Please enter both name and symbol.');
       return;
     }
     // Remove any validation for website or logo URL here
@@ -116,13 +156,18 @@ const TokenDeployer: React.FC = () => {
   return (
     <div className="bg-background rounded-lg shadow-lg p-6 max-w-md mx-auto border border-accent">
       <h2 className="text-2xl font-bold text-accent mb-6 text-center">Create Your Token</h2>
-      <AIButton onClick={() => setShowAiPopup(true)} />
+      <AIButton onClick={handleAIButtonClick} />
       <TokenForm
         formData={formData}
         setFormData={setFormData}
         onDeploy={handleDeploy}
       />
-      <ErrorDisplay errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+      {showErrorPopup && (
+        <ErrorPopup
+          message={errorMessage}
+          onClose={() => setShowErrorPopup(false)}
+        />
+      )}
       {(isLoading || deployedAddress) && (
         <LoadingPopup
           message={loadingMessage}
