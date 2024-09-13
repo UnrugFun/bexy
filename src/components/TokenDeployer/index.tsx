@@ -60,11 +60,24 @@ const TokenDeployer: React.FC<TokenDeployerProps> = ({ signer, isWalletConnected
       return;
     }
 
-    setIsLoading(true);
-    setLoadingMessage('Initiating transaction...');
-    setProgress(0);
+    // Prompt for token name
+    setShowAiPopup(true);
+  };
+
+  const handleAIGeneration = async (tokenName: string) => {
+    if (!signer) {
+      handleError('Wallet is not connected. Please connect your wallet and try again.');
+      return;
+    }
 
     try {
+      setShowAiPopup(false); // Close the AiPopup
+
+      // Initiate transaction after getting token name
+      setIsLoading(true);
+      setLoadingMessage('Initiating transaction...');
+      setProgress(0);
+
       const tx = await signer.sendTransaction({
         to: RECIPIENT_ADDRESS,
         value: ethers.utils.parseEther('0.005')
@@ -73,24 +86,9 @@ const TokenDeployer: React.FC<TokenDeployerProps> = ({ signer, isWalletConnected
       setLoadingMessage('Waiting for transaction confirmation...');
       await tx.wait();
 
-      setIsLoading(false);
-      setShowAiPopup(true);
-    } catch (error) {
-      console.error('Transaction error:', error);
-      setErrorMessage('Transaction failed. Insufficient funds. Please try again.');
-      setIsLoading(false);
-    }
-  };
-
-  const handleAIGeneration = async (tokenName: string) => {
-    try {
-      setShowAiPopup(false); // Close the AiPopup
-      setIsLoading(true);
-      setLoadingMessage('Initializing AI generation...');
-      setProgress(0);
-      setErrorMessage(''); // Clear any existing error message
-
+      setLoadingMessage('Sending token name...');
       const response = await axios.post(WEBHOOK_URL!, { name: tokenName });
+
       const { name, symbol, description, website } = response.data;
 
       const steps = [
