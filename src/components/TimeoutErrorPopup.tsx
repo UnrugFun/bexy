@@ -15,7 +15,7 @@ const TimeoutErrorPopup: React.FC<TimeoutErrorPopupProps> = ({ onClose }) => {
     >
       <div className="bg-background p-6 rounded-lg shadow-lg max-w-md border border-accent">
         <h2 className="text-xl font-bold mb-4 text-accent">Deployment Timeout</h2>
-        <p className="mb-4 text-text">The blockchain is currently busy. Please try again later.</p>
+        <p className="mb-4 text-text">The blockchain is currently busy. Please try again.</p>
         <button
           onClick={onClose}
           className="bg-accent text-background px-4 py-2 rounded hover:bg-accent-dark transition-colors duration-200"
