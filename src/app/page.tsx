@@ -6,7 +6,7 @@ import About from '../components/About';
 export default function Home() {
   return (
     <main className="min-h-screen bg-background">
-      <Hero />
+      <Hero showEmailInput={true} />
       <TokenDeployerWrapper />
       <About />
     </main>

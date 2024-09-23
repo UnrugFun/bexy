@@ -1,0 +1,15 @@
+I
+    - Take the build_codebase.sh in to your root directory, run the bash command to make it executable. 
+    - Move it to context_llm/scripts/scripts0.2/
+    - Run the bash command to run the script.  
+
+II 
+BASH_SCRIPTS
+    ---
+
+    chmod +x build_codebase.sh
+
+    ./context_llm/scripts/scripts0.2/build_codebase.sh
+
+    ---
+    
