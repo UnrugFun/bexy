@@ -1,14 +1,20 @@
 import React from 'react';
-import Hero from '../components/Hero';
+import Image from 'next/image';
 import TokenDeployerWrapper from '../components/TokenDeployerWrapper';
-import About from '../components/About';
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-background">
-      <Hero showEmailInput={true} />
+      <header className="flex justify-between items-center p-4">
+        <Image
+          src="https://i.imgur.com/Ush6OrG.png"
+          alt="Logo"
+          width={50}
+          height={50}
+          className="rounded-lg"
+        />
+      </header>
       <TokenDeployerWrapper />
-      <About />
     </main>
   );
 }

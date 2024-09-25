@@ -22,8 +22,7 @@ const TokenDeployerWrapper: React.FC = () => {
   return (
     <div className="bg-background py-16">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-4xl font-bold text-accent">Demo</h2>
+        <div className="absolute top-4 right-4">
           <WalletConnection
             setSigner={handleWalletConnection}
             setErrorMessage={setErrorMessage}
