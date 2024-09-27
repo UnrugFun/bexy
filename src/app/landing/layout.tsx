@@ -9,7 +9,7 @@ const LandingLayout = ({ children }: { children: React.ReactNode }) => (
     <body className={`${inter.className} bg-background text-text`}>
       <header className="p-4">
         <Image
-          src="https://i.imgur.com/Ush6OrG.png"
+          src="https://i.imgur.com/k1x7uBw.jpeg"
           alt="Logo"
           width={50}
           height={50}

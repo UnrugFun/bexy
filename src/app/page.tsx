@@ -7,7 +7,7 @@ export default function Home() {
     <main className="min-h-screen bg-background">
       <header className="flex justify-between items-center p-4">
         <Image
-          src="https://i.imgur.com/pkUZJ0R.png"
+          src="https://i.imgur.com/k1x7uBw.jpeg"
           alt="Logo"
           width={50}
           height={50}
