@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Token Deployer",
+  title: "Beta - Unrug.fun Token Deployer",
   description: "Deploy your own tokens with ease",
 };
 
